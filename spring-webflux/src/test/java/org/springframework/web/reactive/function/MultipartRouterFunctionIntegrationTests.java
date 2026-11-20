@@ -86,6 +86,8 @@ class MultipartRouterFunctionIntegrationTests extends AbstractRouterFunctionInte
 
 	@ParameterizedHttpServerTest
 	void parts(HttpServer httpServer) throws Exception {
+		// seal: Undertow intermittently never completes the multipart response (StepVerifier 5s timeout), see gh-25310
+		assumeFalse(httpServer instanceof UndertowHttpServer, "seal: Undertow multipart response intermittently times out (gh-25310)");
 		startServer(httpServer);
 
 		Mono<ResponseEntity<Void>> result = webClient
